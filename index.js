@@ -1,29 +1,35 @@
 'use strict';
 
-function getDogImage(num = 3) {
-  fetch(`https://dog.ceo/api/breeds/image/random/${num}`)
+function getDogImage(breed) {
+  fetch(`https://dog.ceo/api/breed/${breed}/images/random`)
     .then(response => response.json())
     .then(responseJson => 
       displayResults(responseJson))
+    .catch(error => alert('Something went wrong. Try again later.'));
 }
 
 function displayResults(responseJson) {
-  console.log(responseJson);
-  $('.results').html('<h2>Look at these dogs!</h2>');
-  //replace the existing image with the new one
-  for(let dog of responseJson.message){
-  $('.results').append(
-    `<img src="${dog}" class="results-img">`);
+
+  if (responseJson.message == "Breed not found") {
+    alert('That breed wasn\'t found, please try another.');
+    } 
+  else {
+    $('.results').html('<h2>Look at these dogs!</h2>');
+    //replace the existing image with the new one    
+    
+    $('.results').append(
+      `<img src="${responseJson.message}" class="results-img">`);
+    
+    //display the results section
+    $('.results').removeClass('hidden');
   }
-  //display the results section
-  $('.results').removeClass('hidden');
 }
 
 function watchForm() {
   $('form').submit(event => {
     event.preventDefault();
-    let numDogs = $('input[name="numDogs"]').val();
-    getDogImage(numDogs);
+    let breedDogs = $('input[name="breedDogs"]').val();
+    getDogImage(breedDogs);
   });
 }
 
